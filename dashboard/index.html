@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'; frame-src 'self' blob:; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>VPN Monitor — текущая панель</title>
+  <style>
+    :root{--ink:#15283e;--muted:#64758b;--line:#dbe4ee;--blue:#1769bd;--bg:#f2f5f9;--green:#197254;--red:#ae3346}*{box-sizing:border-box}body{margin:0;background:var(--bg);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink)}a{color:var(--blue)}button,input{font:inherit}button{border:1px solid var(--line);border-radius:8px;padding:8px 13px;background:#fff;color:var(--ink);cursor:pointer}button:hover{background:#edf4fc}button:disabled{opacity:.55;cursor:wait}button.primary{background:var(--blue);border-color:var(--blue);color:#fff}button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid #87b8ee;outline-offset:2px}[hidden]{display:none!important}.shellbar{display:flex;gap:16px;align-items:center;justify-content:space-between;padding:15px 24px;background:#fff;border-bottom:1px solid var(--line)}.brand{font-weight:750;font-size:17px;letter-spacing:-.3px}.brand small{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:550;color:var(--muted)}.barlinks{display:flex;gap:12px;align-items:center;font-size:12px}.login{max-width:470px;margin:9vh auto 32px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:30px;box-shadow:0 10px 45px #23416009}.eyebrow{color:var(--blue);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase}h1{font-size:27px;letter-spacing:-.6px;line-height:1.2;margin:10px 0 12px}p{margin:8px 0;color:var(--muted)}.label{display:block;font-weight:600;margin:23px 0 7px}.passwordline{display:flex;gap:8px}.passwordline input{min-width:0;flex:1;border:1px solid #bdcbdc;border-radius:8px;padding:11px 12px;color:var(--ink);background:#fff}.passwordline button{font-size:12px;padding:8px 11px}.login .primary{width:100%;margin-top:14px;min-height:43px}.small{font-size:12px;line-height:1.6}.capsule{display:inline-block;border:1px solid #d5e1ed;border-radius:24px;padding:4px 10px;margin:5px 3px 5px 0;color:#526b85;font-size:11px}.statusline{padding:10px 24px;display:flex;align-items:center;gap:10px 20px;flex-wrap:wrap;border-bottom:1px solid var(--line);background:#f8fafd;font-size:12px;color:var(--muted)}.statusline strong{color:var(--ink)}.statusline .actions{margin-left:auto;display:flex;gap:7px}.statusline button{padding:5px 10px;font-size:12px}.state{display:flex;gap:7px;align-items:center}.state-dot{width:8px;height:8px;flex-shrink:0;border-radius:50%;background:#8c9baa}.state-dot.ok{background:var(--green)}.state-dot.warn{background:#bd8b22}.state-dot.error{background:var(--red)}.notice{margin:14px 24px;border:1px solid #e4cba4;background:#fff8e9;color:#72521c;padding:12px 15px;border-radius:9px;font-size:13px}.notice.error{border-color:#e8bcc2;background:#fff0f2;color:#8d2938}.notice:empty{display:none}.login .notice{margin:15px 0 0}.progress{font-size:12px;color:#526d8b;min-height:18px;margin-top:12px}.panel{display:block;width:100%;height:calc(100vh - 142px);min-height:580px;border:0;background:#f3f5f9}.footnote{max-width:470px;margin:0 auto 30px;padding:0 20px;color:#718195;font-size:11px;text-align:center}@media(max-width:650px){.shellbar{padding:12px 14px;gap:8px}.barlinks{font-size:11px}.login{margin:30px 12px 20px;padding:24px}.statusline{padding:10px 14px;gap:7px 15px}.statusline .actions{margin-left:0;width:100%}.notice{margin:10px 14px}.panel{height:calc(100vh - 180px);min-height:600px}h1{font-size:25px}}
+  </style>
+  <script src="loader.js" defer></script>
+</head>
+<body>
+  <header class="shellbar">
+    <div class="brand">VPN Monitor<small>Россия · Франция</small></div>
+    <div class="barlinks"><a href="../index.html">О проекте</a><button id="lockButton" hidden>Закрыть панель</button></div>
+  </header>
+  <section class="statusline" id="statusBar" hidden aria-label="Состояние обновления панели">
+    <div class="state"><i id="statusDot" class="state-dot"></i><strong id="connectionStatus">Ожидание</strong></div>
+    <span id="sourceTime">Архив: —</span>
+    <span id="successTime">Получено: —</span>
+    <span id="measurementTime">Измерения: —</span>
+    <span id="trafficInfo">Загрузка только новых фрагментов</span>
+    <div class="actions"><button id="refreshButton">Обновить сейчас</button><button id="cacheButton">Очистить кеш</button></div>
+  </section>
+  <div id="updateError" class="notice error" hidden role="status" aria-live="polite"></div>
+  <main>
+    <section class="login" id="loginCard">
+      <div class="eyebrow">Текущая аналитика моста</div>
+      <h1>Откройте вашу панель</h1>
+      <p>Ресурсы серверов, качество соединения и трафик пользователей — с автоматическим обновлением.</p>
+      <div><span class="capsule">1 сутки · 7 дней · 30 дней</span><span class="capsule">Шифрованные данные</span></div>
+      <form id="unlockForm">
+        <label class="label" for="dashboardPassword">Пароль панели</label>
+        <div class="passwordline"><input id="dashboardPassword" type="password" autocomplete="current-password" required maxlength="1024" aria-describedby="passwordHint"><button id="showPassword" type="button" aria-pressed="false">Показать</button></div>
+        <button class="primary" id="unlockButton" type="submit">Открыть панель</button>
+      </form>
+      <p class="small" id="passwordHint">Введите пароль, заданный при настройке публикации. Он расшифровывает данные в этой вкладке и не отправляется на сайт.</p>
+      <div id="loginError" class="notice error" hidden role="alert"></div>
+      <div class="progress" id="progress" aria-live="polite"></div>
+    </section>
+    <p class="footnote" id="loginFootnote">Проверка обновлений — раз в минуту. Сохранённые фрагменты используются повторно. Кнопка «Закрыть панель» удаляет ключ и расшифрованную панель из памяти этой страницы.</p>
+    <div id="panelHost"></div>
+  </main>
+</body>
+</html>
